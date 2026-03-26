@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+  <meta charset="UTF-8">
+  <title>Mi Espacio</title>
+
+  <link rel="manifest" href="manifest.json">
+
+</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Espacio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0f14; --bg2:#131720; --bg3:#1a2030; --bg4:#212840;
+  --card:#161c28; --card2:#1e2535;
+  --border:#2a3348; --border2:#334060;
+  --blue:#3b82f6; --blue2:#60a5fa; --blue-dim:rgba(59,130,246,.15);
+  --green:#22c55e; --green2:#4ade80; --green-dim:rgba(34,197,94,.15);
+  --red:#ef4444; --red2:#f87171; --red-dim:rgba(239,68,68,.15);
+  --yellow:#f59e0b; --yellow-dim:rgba(245,158,11,.15);
+  --text:#e8edf5; --text2:#9aa5be; --text3:#5a6a88;
+  --r:12px; --rsm:8px; --rlg:18px;
+  --shadow:0 4px 24px rgba(0,0,0,.4);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-top:56px;padding-bottom:100px;}
+  <body>
+
+  <!-- todo tu contenido -->
+
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js');
+  }
+  </script>
+
+</body>
+
+/* TOP NAV */
+.top-nav{position:fixed;top:0;left:0;right:0;height:56px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;z-index:300;gap:14px;}
+.top-nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;background:linear-gradient(135deg,var(--blue2),var(--green2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex:1;}
+.menu-btn{width:36px;height:36px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .18s;flex-shrink:0;}
+.menu-btn:hover{background:var(--bg4);color:var(--text);border-color:var(--border2);}
+
+/* SIDEBAR OVERLAY */
+.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);z-index:400;opacity:0;pointer-events:none;transition:opacity .25s ease;}
+.sidebar-overlay.open{opacity:1;pointer-events:all;}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:260px;background:var(--bg2);border-right:1px solid var(--border);padding:0;display:flex;flex-direction:column;z-index:500;transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);box-shadow:6px 0 40px rgba(0,0,0,.6);}
+.sidebar.open{transform:translateX(0);}
+.sidebar-header{padding:20px 20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.sidebar-logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;background:linear-gradient(135deg,var(--blue2),var(--green2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sidebar-logo-sub{font-size:11px;color:var(--text3);-webkit-text-fill-color:var(--text3);margin-top:2px;}
+.sidebar-close-btn{width:32px;height:32px;border-radius:8px;background:var(--bg3);border:1px solid var(--border);color:var(--text3);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;line-height:1;}
+.sidebar-close-btn:hover{color:var(--text);background:var(--bg4);}
+.sidebar-nav{overflow-y:auto;flex:1;padding:12px 0;}
+.nav-group{padding:4px 12px;margin-bottom:4px;}
+.nav-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding:8px 8px 4px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--rsm);cursor:pointer;color:var(--text2);font-size:14px;font-weight:500;transition:all .18s;user-select:none;}
+.nav-item:hover{background:var(--bg3);color:var(--text);}
+.nav-item.active{background:var(--blue-dim);color:var(--blue2);}
+.nav-item .icon{font-size:16px;width:20px;text-align:center;}
+
+/* MAIN */
+.main{padding:28px 28px 0;max-width:900px;margin:0 auto;}
+
+/* PAGES */
+.page{display:none;animation:fadeIn .22s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* TYPOGRAPHY */
+h1{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;}
+h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;}
+h3{font-family:'Syne',sans-serif;font-size:15px;font-weight:600;}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--rlg);padding:20px;}
+.card2{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:16px;}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:24px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--rlg);padding:18px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.stat-card.blue::before{background:linear-gradient(90deg,var(--blue),var(--blue2));}
+.stat-card.green::before{background:linear-gradient(90deg,var(--green),var(--green2));}
+.stat-card.red::before{background:linear-gradient(90deg,var(--red),var(--red2));}
+.stat-card.yellow::before{background:linear-gradient(90deg,var(--yellow),#fcd34d);}
+.stat-label{font-size:11px;color:var(--text3);font-weight:500;margin-bottom:5px;}
+.stat-value{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;}
+.stat-value.blue{color:var(--blue2);}.stat-value.green{color:var(--green2);}.stat-value.red{color:var(--red2);}.stat-value.yellow{color:var(--yellow);}
+.stat-sub{font-size:11px;color:var(--text3);margin-top:3px;}
+
+/* SECTION HEADER */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.section-header h2{display:flex;align-items:center;gap:10px;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;transition:all .18s;}
+.btn-primary{background:var(--blue);color:white;}.btn-primary:hover{background:#2563eb;transform:translateY(-1px);}
+.btn-green{background:var(--green);color:white;}.btn-green:hover{background:#16a34a;transform:translateY(-1px);}
+.btn-ghost{background:var(--bg3);color:var(--text2);border:1px solid var(--border);}.btn-ghost:hover{background:var(--bg4);color:var(--text);}
+.btn-danger{background:var(--red-dim);color:var(--red2);border:1px solid transparent;}.btn-danger:hover{background:var(--red);color:white;}
+.btn-sm{padding:5px 11px;font-size:12px;border-radius:8px;}
+.btn-xs{padding:3px 8px;font-size:11px;border-radius:6px;}
+.btn-icon{padding:7px;border-radius:8px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all .18s;font-size:13px;}
+.btn-icon:hover{background:var(--bg4);color:var(--text);}
+.btn-mini-add{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:6px;border:1px solid var(--border2);background:var(--bg3);color:var(--blue2);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-mini-add:hover{background:var(--blue-dim);border-color:var(--blue);}
+
+/* FORMS */
+.form-group{margin-bottom:13px;}
+.form-label{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.05em;}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);padding:9px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;transition:border .18s;outline:none;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-dim);}
+.form-select{cursor:pointer;}.form-select option{background:var(--bg3);}
+.form-textarea{resize:vertical;min-height:80px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:600;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:20px;padding:26px;width:90%;max-width:460px;max-height:85vh;overflow-y:auto;transform:scale(.95) translateY(10px);transition:transform .2s;}
+.modal-overlay.open .modal{transform:scale(1) translateY(0);}
+.quick-modal{background:var(--card);border:1px solid var(--border2);border-radius:24px;padding:26px;width:90%;max-width:360px;transform:scale(.95) translateY(16px);transition:transform .2s;}
+.modal-overlay.open .quick-modal{transform:scale(1) translateY(0);}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.modal-close{background:none;border:none;color:var(--text3);font-size:22px;cursor:pointer;line-height:1;padding:2px 6px;border-radius:6px;}
+.modal-close:hover{color:var(--text);background:var(--bg3);}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
+
+/* QUICK ACTIONS */
+.quick-actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+.quick-action-btn{display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 12px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg3);cursor:pointer;transition:all .18s;color:var(--text2);}
+.quick-action-btn:hover{border-color:var(--blue);background:var(--blue-dim);color:var(--text);}
+.qa-icon{font-size:26px;}.qa-label{font-size:12px;font-weight:500;}
+
+/* TABS */
+.tabs{display:flex;gap:4px;background:var(--bg3);padding:4px;border-radius:10px;margin-bottom:20px;width:fit-content;}
+.tab{padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text3);transition:all .18s;user-select:none;}
+.tab.active{background:var(--card);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.3);}
+
+/* ITEMS */
+.item-list{display:flex;flex-direction:column;gap:8px;}
+.item-card{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;display:flex;align-items:center;gap:12px;transition:border-color .18s;}
+.item-card:hover{border-color:var(--border2);}
+.item-card.acquired{opacity:.6;}
+.item-info{flex:1;min-width:0;}
+.item-name{font-size:14px;font-weight:500;}
+.item-meta{font-size:12px;color:var(--text3);margin-top:3px;}
+.item-tag{display:inline-block;padding:2px 7px;border-radius:20px;font-size:11px;font-weight:600;margin-right:5px;}
+.tag-blue{background:var(--blue-dim);color:var(--blue2);}
+.tag-green{background:var(--green-dim);color:var(--green2);}
+.tag-red{background:var(--red-dim);color:var(--red2);}
+.tag-yellow{background:var(--yellow-dim);color:var(--yellow);}
+.tag-gray{background:var(--bg4);color:var(--text3);}
+.item-actions{display:flex;gap:5px;align-items:center;}
+
+/* TOGGLE */
+.toggle{position:relative;width:44px;height:24px;cursor:pointer;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-track{position:absolute;inset:0;background:var(--bg4);border-radius:12px;transition:.2s;border:1px solid var(--border2);}
+.toggle input:checked+.toggle-track{background:var(--green);border-color:var(--green);}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;background:white;border-radius:50%;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.toggle input:checked~.toggle-thumb{left:23px;}
+
+/* CATEGORY */
+.cat-section{margin-bottom:22px;}
+.cat-header{display:flex;align-items:center;justify-content:space-between;padding:8px 0;margin-bottom:10px;border-bottom:1px solid var(--border);}
+
+/* HOME */
+.greeting-text{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;background:linear-gradient(135deg,var(--text),var(--blue2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.greeting-date{color:var(--text3);font-size:13px;margin-top:4px;}
+.home-sections-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-top:20px;}
+.home-section-card{background:var(--card);border:1px solid var(--border);border-radius:var(--rlg);padding:18px;cursor:pointer;transition:all .2s;}
+.home-section-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow);}
+.hs-icon{font-size:26px;margin-bottom:8px;display:block;}
+.hs-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:3px;}
+.hs-desc{font-size:11px;color:var(--text3);}
+
+/* BOTTOM BAR */
+.bottom-bar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);width:calc(100% - 48px);max-width:600px;background:rgba(19,23,32,.96);border:1px solid var(--border2);border-radius:20px;padding:8px 16px;display:flex;align-items:center;justify-content:space-around;z-index:290;box-shadow:0 8px 32px rgba(0,0,0,.55);backdrop-filter:blur(16px);}
+.bar-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 12px;border-radius:12px;cursor:pointer;color:var(--text3);font-size:10px;font-weight:500;transition:all .18s;border:none;background:none;user-select:none;}
+.bar-btn .bar-icon{font-size:19px;line-height:1;}
+.bar-btn:hover{color:var(--text);background:var(--bg3);}
+.bar-btn.active{color:var(--blue2);}
+.bar-plus{width:50px;height:50px;border-radius:15px;background:linear-gradient(135deg,var(--blue),#1d4ed8);border:none;color:white;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(59,130,246,.45);transition:all .2s;margin-top:-16px;flex-shrink:0;}
+.bar-plus:hover{transform:scale(1.08) translateY(-2px);box-shadow:0 6px 24px rgba(59,130,246,.6);}
+
+/* NOTES */
+.notes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
+.note-card{background:var(--card2);border:1px solid var(--border);border-radius:var(--rlg);padding:16px;cursor:pointer;transition:all .18s;position:relative;}
+.note-card:hover{border-color:var(--border2);transform:translateY(-1px);}
+.note-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:7px;}
+.note-body{font-size:12px;color:var(--text2);line-height:1.6;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+.note-date{font-size:10px;color:var(--text3);margin-top:10px;}
+.note-del-btn{position:absolute;top:10px;right:10px;display:none;}
+.note-card:hover .note-del-btn{display:flex;}
+.note-view{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);z-index:700;display:none;align-items:center;justify-content:center;}
+.note-view.open{display:flex;}
+.note-view-card{background:var(--card);border:1px solid var(--border2);border-radius:20px;padding:30px;width:90%;max-width:580px;max-height:80vh;overflow-y:auto;}
+.note-view-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:14px;}
+.note-view-body{font-size:14px;line-height:1.75;color:var(--text2);white-space:pre-wrap;}
+
+/* UTILS */
+.flex{display:flex;}.items-center{align-items:center;}.justify-between{justify-content:space-between;}
+.gap-2{gap:8px;}.gap-3{gap:12px;}.mb-4{margin-bottom:16px;}.mb-6{margin-bottom:24px;}
+.text-sm{font-size:13px;}.text-xs{font-size:11px;}.text-muted{color:var(--text3);}
+.text-green{color:var(--green2);}.text-red{color:var(--red2);}.text-blue{color:var(--blue2);}.text-yellow{color:var(--yellow);}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3);}
+.empty-state .es-icon{font-size:38px;margin-bottom:10px;opacity:.5;}
+.empty-state .es-text{font-size:13px;}
+.divider{height:1px;background:var(--border);margin:14px 0;}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px;}
+
+@media(max-width:640px){
+  .main{padding:20px 14px 0;}
+  .form-row{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  #fin-cols{grid-template-columns:1fr!important;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="top-nav">
+  <button class="menu-btn" onclick="toggleSidebar()" title="Menú">☰</button>
+  <div class="top-nav-logo">Mi Espacio</div>
+</div>
+
+<!-- SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div>
+      <div class="sidebar-logo-text">Mi Espacio</div>
+      <div class="sidebar-logo-sub">Tu dashboard personal</div>
+    </div>
+    <button class="sidebar-close-btn" onclick="closeSidebar()">×</button>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-group">
+      <div class="nav-item active" onclick="goTo('home')" data-page="home">
+        <span class="icon">🏠</span> Inicio
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Secciones</div>
+      <div class="nav-item" onclick="goTo('wishlist')" data-page="wishlist"><span class="icon">✨</span> Wish List</div>
+      <div class="nav-item" onclick="goTo('suscripciones')" data-page="suscripciones"><span class="icon">📦</span> Suscripciones</div>
+      <div class="nav-item" onclick="goTo('salidas')" data-page="salidas"><span class="icon">🚗</span> Salidas</div>
+      <div class="nav-item" onclick="goTo('iglesia')" data-page="iglesia"><span class="icon">⛪</span> Iglesia</div>
+      <div class="nav-item" onclick="goTo('finanzas')" data-page="finanzas"><span class="icon">💰</span> Finanzas</div>
+      <div class="nav-item" onclick="goTo('notas')" data-page="notas"><span class="icon">🗒️</span> Notas</div>
+      <div id="custom-nav-items"></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">App</div>
+      <div class="nav-item" onclick="goTo('herramientas')" data-page="herramientas"><span class="icon">🛠️</span> Herramientas</div>
+      <div class="nav-item" onclick="goTo('config')" data-page="config"><span class="icon">⚙️</span> Configuración</div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HOME -->
+  <div id="page-home" class="page active">
+    <div style="margin-bottom:24px;">
+      <div class="greeting-text" id="home-greeting-text">Hola, Sebastián 👋</div>
+      <div class="greeting-date" id="home-date"></div>
+    </div>
+    <div class="stats-grid" id="home-stats"></div>
+    <div class="flex items-center justify-between mb-4">
+      <h2>Tus secciones</h2>
+    </div>
+    <div class="home-sections-grid" id="home-sections-grid"></div>
+  </div>
+
+  <!-- WISH LIST -->
+  <div id="page-wishlist" class="page">
+    <div class="section-header">
+      <h2>✨ Wish List</h2>
+      <div class="flex gap-2">
+        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-add-wl-cat')">+ Categoría</button>
+        <button class="btn btn-primary btn-sm" onclick="openModal('modal-add-wish')">+ Artículo</button>
+      </div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('wl','pending',this)">Pendientes</div>
+      <div class="tab" onclick="switchTab('wl','acquired',this)">Ya adquiridos ✅</div>
+    </div>
+    <div id="wl-pending-view"><div id="wishlist-pending-list"></div></div>
+    <div id="wl-acquired-view" style="display:none"><div id="wishlist-acquired-list"></div></div>
+  </div>
+
+  <!-- SUSCRIPCIONES -->
+  <div id="page-suscripciones" class="page">
+    <div class="section-header">
+      <h2>📦 Suscripciones</h2>
+      <button class="btn btn-primary btn-sm" onclick="openModal('modal-add-sub')">+ Nueva</button>
+    </div>
+    <div class="stats-grid" id="sub-stats"></div>
+    <div id="subs-list"></div>
+  </div>
+
+  <!-- SALIDAS -->
+  <div id="page-salidas" class="page">
+    <div class="section-header">
+      <h2>🚗 Salidas</h2>
+      <div class="flex gap-2">
+        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-add-sal-cat')">+ Categoría</button>
+        <button class="btn btn-primary btn-sm" onclick="openModal('modal-add-salida')">+ Salida</button>
+      </div>
+    </div>
+    <div id="salidas-stats"></div>
+    <div id="salidas-list"></div>
+  </div>
+
+  <!-- IGLESIA -->
+  <div id="page-iglesia" class="page">
+    <div class="section-header"><h2>⛪ Iglesia</h2></div>
+    <div class="stats-grid" id="iglesia-stats"></div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('ig','diezmo',this)">Diezmo y Ofrenda</div>
+      <div class="tab" onclick="switchTab('ig','apoyo',this)">Apoyo Social</div>
+      <div class="tab" onclick="switchTab('ig','encuentros',this)">Encuentros</div>
+    </div>
+    <div id="ig-diezmo-view"><div id="iglesia-diezmo-list"></div></div>
+    <div id="ig-apoyo-view" style="display:none"><div id="iglesia-apoyo-list"></div></div>
+    <div id="ig-encuentros-view" style="display:none"><div id="iglesia-encuentros-list"></div></div>
+  </div>
+
+  <!-- FINANZAS -->
+  <div id="page-finanzas" class="page">
+    <div class="section-header">
+      <h2>💰 Finanzas</h2>
+    </div>
+    <div class="stats-grid" id="fin-stats"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;" id="fin-cols">
+      <div>
+        <div class="cat-header">
+          <h3>💚 Ingresos</h3>
+          <button class="btn-mini-add" onclick="openModal('modal-add-income')">+ añadir</button>
+        </div>
+        <div id="fin-incomes-list"></div>
+      </div>
+      <div>
+        <div class="cat-header">
+          <h3>🔴 Gastos manuales</h3>
+          <button class="btn-mini-add" onclick="openModal('modal-add-expense')">+ añadir</button>
+        </div>
+        <div id="fin-expenses-list"></div>
+        <div class="divider"></div>
+        <div class="cat-header" style="border:none;padding:0;margin-bottom:10px;">
+          <h3 style="color:var(--text2);font-size:13px;">Gastos automáticos</h3>
+        </div>
+        <div id="fin-auto-expenses"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTAS -->
+  <div id="page-notas" class="page">
+    <div class="section-header">
+      <h2>🗒️ Notas</h2>
+      <button class="btn btn-primary btn-sm" onclick="openModal('modal-add-note')">+ Nueva nota</button>
+    </div>
+    <div class="notes-grid" id="notes-grid"></div>
+  </div>
+
+  <!-- HERRAMIENTAS -->
+  <div id="page-herramientas" class="page">
+    <div class="section-header"><h2>🛠️ Herramientas</h2></div>
+    <div class="card mb-6">
+      <h3 style="margin-bottom:14px;">💰 Finanzas</h3>
+      <div class="flex gap-2" style="flex-wrap:wrap;">
+        <div class="flex items-center gap-2"><span class="text-sm text-muted">Ingresos</span><button class="btn-mini-add" onclick="openModal('modal-add-income')">+ añadir</button></div>
+        <div class="flex items-center gap-2"><span class="text-sm text-muted">Gastos manuales</span><button class="btn-mini-add" onclick="openModal('modal-add-expense')">+ añadir</button></div>
+        <div class="flex items-center gap-2"><span class="text-sm text-muted">Categoría gastos</span><button class="btn-mini-add" onclick="openModal('modal-add-exp-cat')">+ añadir</button></div>
+      </div>
+    </div>
+    <div class="card mb-6">
+      <h3 style="margin-bottom:14px;">✨ Wish List</h3>
+      <div class="flex gap-2" style="flex-wrap:wrap;">
+        <div class="flex items-center gap-2"><span class="text-sm text-muted">Artículo</span><button class="btn-mini-add" onclick="openModal('modal-add-wish')">+ añadir</button></div>
+        <div class="flex items-center gap-2"><span class="text-sm text-muted">Categoría</span><button class="btn-mini-add" onclick="openModal('modal-add-wl-cat')">+ añadir</button></div>
+      </div>
+    </div>
+    <div class="card mb-6">
+      <h3 style="margin-bottom:14px;">📦 Suscripciones</h3>
+      <div class="flex items-center gap-2"><span class="text-sm text-muted">Nueva suscripción</span><button class="btn-mini-add" onclick="openModal('modal-add-sub')">+ añadir</button></div>
+    </div>
+    <div class="card mb-6">
+      <h3 style="margin-bottom:14px;">🚗 Salidas</h3>
+      <div class="flex gap-2" style="flex-wrap:wrap;">
+        <div class="flex items-center gap-2"><span class="text-sm text-muted">Salida</span><button class="btn-mini-add" onclick="openModal('modal-add-salida')">+ añadir</button></div>
+        <div class="flex items-center gap-2"><span class="text-sm text-muted">Categoría</span><button class="btn-mini-add" onclick="openModal('modal-add-sal-cat')">+ añadir</button></div>
+      </div>
+    </div>
+    <div class="card mb-6">
+      <h3 style="margin-bottom:14px;">⛪ Iglesia</h3>
+      <div class="flex gap-2" style="flex-wrap:wrap;">
+        <div class="flex items-center gap-2"><span class="text-sm text-muted">Diezmo/Ofrenda</span><button class="btn-mini-add" onclick="openIglesiaModal('diezmo')">+ añadir</button></div>
+        <div class="flex items-center gap-2"><span class="text-sm text-muted">Apoyo Social</span><button class="btn-mini-add" onclick="openIglesiaModal('apoyo')">+ añadir</button></div>
+        <div class="flex items-center gap-2"><span class="text-sm text-muted">Encuentro</span><button class="btn-mini-add" onclick="openIglesiaModal('encuentros')">+ añadir</button></div>
+      </div>
+    </div>
+    <div class="card mb-6">
+      <h3 style="margin-bottom:14px;">🗒️ Notas</h3>
+      <div class="flex items-center gap-2"><span class="text-sm text-muted">Nueva nota</span><button class="btn-mini-add" onclick="openModal('modal-add-note')">+ añadir</button></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:14px;">📁 Secciones</h3>
+      <div class="flex items-center gap-2"><span class="text-sm text-muted">Nueva sección personalizada</span><button class="btn-mini-add" onclick="openModal('modal-new-section')">+ añadir</button></div>
+    </div>
+  </div>
+
+  <!-- CONFIG -->
+  <div id="page-config" class="page">
+    <div class="section-header"><h2>⚙️ Configuración</h2></div>
+    <div class="card mb-6">
+      <h3 style="margin-bottom:16px;">👤 Perfil</h3>
+      <div class="form-group">
+        <label class="form-label">Tu nombre</label>
+        <input class="form-input" id="config-name" placeholder="Sebastián">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Moneda</label>
+        <select class="form-select" id="config-currency">
+          <option value="$">$ – Peso colombiano</option>
+          <option value="USD">USD – Dólar</option>
+          <option value="€">€ – Euro</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="saveConfig()">Guardar cambios</button>
+    </div>
+    <div class="card mb-6">
+      <h3 style="margin-bottom:16px;">📊 Datos</h3>
+      <div style="display:flex;flex-direction:column;gap:0;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border);">
+          <div><div style="font-size:14px;font-weight:500;">Exportar datos</div><div style="font-size:12px;color:var(--text3);">Descarga tus datos como JSON</div></div>
+          <button class="btn btn-ghost btn-sm" onclick="exportData()">Exportar</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;">
+          <div><div style="font-size:14px;font-weight:500;">Borrar todos los datos</div><div style="font-size:12px;color:var(--text3);">Acción irreversible</div></div>
+          <button class="btn btn-danger btn-sm" onclick="clearAllData()">Borrar todo</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:10px;">ℹ️ Acerca de</h3>
+      <p style="font-size:13px;color:var(--text3);line-height:1.6;">Tu espacio personal de finanzas, listas y notas. Todos los datos se guardan localmente en tu navegador.</p>
+      <p style="font-size:11px;color:var(--text3);margin-top:8px;">Versión 3.0 · Mi Espacio</p>
+    </div>
+  </div>
+
+</main>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <button class="bar-btn active" onclick="goTo('home')" data-bar="home">
+    <span class="bar-icon">🏠</span><span>Inicio</span>
+  </button>
+  <button class="bar-btn" onclick="goTo('herramientas')" data-bar="herramientas">
+    <span class="bar-icon">🛠️</span><span>Herramientas</span>
+  </button>
+  <button class="bar-plus" onclick="openQuickAdd()">+</button>
+  <button class="bar-btn" onclick="goTo('notas')" data-bar="notas">
+    <span class="bar-icon">🗒️</span><span>Notas</span>
+  </button>
+  <button class="bar-btn" onclick="goTo('config')" data-bar="config">
+    <span class="bar-icon">⚙️</span><span>Config</span>
+  </button>
+</div>
+
+<!-- ══ MODALS ══ -->
+
+<!-- Quick Add -->
+<div class="modal-overlay" id="modal-quick-add">
+  <div class="quick-modal">
+    <div class="modal-header">
+      <h3>¿Qué quieres añadir?</h3>
+      <button class="modal-close" onclick="closeModal('modal-quick-add')">×</button>
+    </div>
+    <div class="quick-actions-grid">
+      <div class="quick-action-btn" onclick="closeModal('modal-quick-add');openModal('modal-add-quick-expense')"><span class="qa-icon">💸</span><span class="qa-label">Gasto rápido</span></div>
+      <div class="quick-action-btn" onclick="closeModal('modal-quick-add');openModal('modal-add-note')"><span class="qa-icon">🗒️</span><span class="qa-label">Nueva nota</span></div>
+      <div class="quick-action-btn" onclick="closeModal('modal-quick-add');openModal('modal-add-wish')"><span class="qa-icon">✨</span><span class="qa-label">Wish list</span></div>
+      <div class="quick-action-btn" onclick="closeModal('modal-quick-add');openModal('modal-add-income')"><span class="qa-icon">💚</span><span class="qa-label">Ingreso</span></div>
+      <div class="quick-action-btn" onclick="closeModal('modal-quick-add');openModal('modal-add-salida')"><span class="qa-icon">🚗</span><span class="qa-label">Salida</span></div>
+      <div class="quick-action-btn" onclick="closeModal('modal-quick-add');openModal('modal-new-section')"><span class="qa-icon">📁</span><span class="qa-label">Nueva sección</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Expense -->
+<div class="modal-overlay" id="modal-add-quick-expense">
+  <div class="modal">
+    <div class="modal-header"><h3>💸 Gasto rápido</h3><button class="modal-close" onclick="closeModal('modal-add-quick-expense')">×</button></div>
+    <div class="form-group"><label class="form-label">Nombre / descripción</label><input class="form-input" id="qe-name" placeholder="Ej: Almuerzo, taxi..."></div>
+    <div class="form-group"><label class="form-label">Valor</label><input class="form-input" id="qe-amount" type="number" placeholder="0"></div>
+    <div class="form-group">
+      <label class="form-label">Sección (opcional)</label>
+      <select class="form-select" id="qe-section">
+        <option value="">Sin sección (solo registrar)</option>
+        <option value="salidas">Salidas</option>
+        <option value="finanzas">Finanzas manual</option>
+        <option value="iglesia-apoyo">Iglesia – Apoyo Social</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Fecha</label><input class="form-input" id="qe-date" type="date"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-quick-expense')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveQuickExpense()">Añadir gasto</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Wish -->
+<div class="modal-overlay" id="modal-add-wish">
+  <div class="modal">
+    <div class="modal-header"><h3>✨ Añadir a Wish List</h3><button class="modal-close" onclick="closeModal('modal-add-wish')">×</button></div>
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="wl-name" placeholder="Ej: AirPods Pro"></div>
+    <div class="form-group"><label class="form-label">Categoría</label><select class="form-select" id="wl-cat"></select></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Precio estimado</label><input class="form-input" id="wl-price" type="number" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Enlace</label><input class="form-input" id="wl-link" placeholder="https://..."></div>
+    </div>
+    <div class="form-group"><label class="form-label">Notas</label><input class="form-input" id="wl-notes" placeholder="Notas opcionales"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-wish')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveWish()">Añadir</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add WL Category -->
+<div class="modal-overlay" id="modal-add-wl-cat">
+  <div class="modal">
+    <div class="modal-header"><h3>+ Categoría · Wish List</h3><button class="modal-close" onclick="closeModal('modal-add-wl-cat')">×</button></div>
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="wl-cat-name" placeholder="Ej: Videojuegos"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-wl-cat')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveWLCat()">Crear</button>
+    </div>
+  </div>
+</div>
+
+<!-- Mark Acquired -->
+<div class="modal-overlay" id="modal-acquired">
+  <div class="modal">
+    <div class="modal-header"><h3>✅ Marcar como adquirido</h3><button class="modal-close" onclick="closeModal('modal-acquired')">×</button></div>
+    <input type="hidden" id="acq-id">
+    <div class="form-group"><label class="form-label">Precio real pagado</label><input class="form-input" id="acq-price" type="number" placeholder="0"></div>
+    <div class="form-group"><label class="form-label">Fecha de compra</label><input class="form-input" id="acq-date" type="date"></div>
+    <div class="form-group"><label class="form-label">Nota (opcional)</label><input class="form-input" id="acq-note" placeholder="Dónde lo compraste, etc."></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-acquired')">Cancelar</button>
+      <button class="btn btn-green" onclick="confirmAcquired()">Confirmar compra</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Subscription -->
+<div class="modal-overlay" id="modal-add-sub">
+  <div class="modal">
+    <div class="modal-header"><h3>📦 Nueva suscripción</h3><button class="modal-close" onclick="closeModal('modal-add-sub')">×</button></div>
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="sub-name" placeholder="Ej: Disney+"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Costo</label><input class="form-input" id="sub-cost" type="number" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Ciclo</label><select class="form-select" id="sub-cycle"><option value="mensual">Mensual</option><option value="anual">Anual</option><option value="semanal">Semanal</option></select></div>
+    </div>
+    <div class="form-group"><label class="form-label">Fecha de renovación</label><input class="form-input" id="sub-renewal" type="date"></div>
+    <div class="form-group"><label class="form-label">Emoji / ícono</label><input class="form-input" id="sub-icon" placeholder="🎵" maxlength="2"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-sub')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveSub()">Añadir</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Salida -->
+<div class="modal-overlay" id="modal-add-salida">
+  <div class="modal">
+    <div class="modal-header"><h3>🚗 Nueva salida</h3><button class="modal-close" onclick="closeModal('modal-add-salida')">×</button></div>
+    <div class="form-group"><label class="form-label">Descripción</label><input class="form-input" id="sal-name" placeholder="Ej: Cena en restaurante"></div>
+    <div class="form-group"><label class="form-label">Categoría</label><select class="form-select" id="sal-cat"></select></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Monto</label><input class="form-input" id="sal-amount" type="number" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Fecha</label><input class="form-input" id="sal-date" type="date"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Nota</label><input class="form-input" id="sal-note" placeholder="Opcional"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-salida')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveSalida()">Añadir</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Salida Category -->
+<div class="modal-overlay" id="modal-add-sal-cat">
+  <div class="modal">
+    <div class="modal-header"><h3>+ Categoría · Salidas</h3><button class="modal-close" onclick="closeModal('modal-add-sal-cat')">×</button></div>
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="sal-cat-name" placeholder="Ej: Entretenimiento"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-sal-cat')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveSalidaCat()">Crear</button>
+    </div>
+  </div>
+</div>
+
+<!-- Iglesia modal -->
+<div class="modal-overlay" id="modal-iglesia">
+  <div class="modal">
+    <div class="modal-header"><h3 id="iglesia-modal-title">⛪ Añadir</h3><button class="modal-close" onclick="closeModal('modal-iglesia')">×</button></div>
+    <input type="hidden" id="ig-type">
+    <div class="form-group" id="ig-name-group"><label class="form-label">Nombre</label><input class="form-input" id="ig-name" placeholder="Ej: Dulces encuentro"></div>
+    <div class="form-group" id="ig-subtype-group" style="display:none"><label class="form-label">Tipo</label><select class="form-select" id="ig-subtype"><option value="diezmo">Diezmo</option><option value="ofrenda">Ofrenda</option><option value="ambos">Diezmo y Ofrenda</option></select></div>
+    <div class="form-group"><label class="form-label">Valor</label><input class="form-input" id="ig-amount" type="number" placeholder="0"></div>
+    <div class="form-group"><label class="form-label">Fecha</label><input class="form-input" id="ig-date" type="date"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-iglesia')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveIglesia()">Añadir</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Income -->
+<div class="modal-overlay" id="modal-add-income">
+  <div class="modal">
+    <div class="modal-header"><h3>💚 Añadir ingreso</h3><button class="modal-close" onclick="closeModal('modal-add-income')">×</button></div>
+    <div class="form-group"><label class="form-label">Descripción</label><input class="form-input" id="inc-name" placeholder="Ej: Salario, freelance..."></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Monto</label><input class="form-input" id="inc-amount" type="number" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Fecha</label><input class="form-input" id="inc-date" type="date"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-income')">Cancelar</button>
+      <button class="btn btn-green" onclick="saveIncome()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Manual Expense -->
+<div class="modal-overlay" id="modal-add-expense">
+  <div class="modal">
+    <div class="modal-header"><h3>🔴 Gasto manual</h3><button class="modal-close" onclick="closeModal('modal-add-expense')">×</button></div>
+    <div class="form-group"><label class="form-label">Descripción</label><input class="form-input" id="exp-name" placeholder="Descripción"></div>
+    <div class="form-group"><label class="form-label">Categoría</label><select class="form-select" id="exp-cat"></select></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Monto</label><input class="form-input" id="exp-amount" type="number" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Fecha</label><input class="form-input" id="exp-date" type="date"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-expense')">Cancelar</button>
+      <button class="btn btn-danger" onclick="saveExpense()">Añadir gasto</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Expense Category -->
+<div class="modal-overlay" id="modal-add-exp-cat">
+  <div class="modal">
+    <div class="modal-header"><h3>+ Categoría · Gastos</h3><button class="modal-close" onclick="closeModal('modal-add-exp-cat')">×</button></div>
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="exp-cat-name" placeholder="Ej: Transporte"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-exp-cat')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveExpCat()">Crear</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Note -->
+<div class="modal-overlay" id="modal-add-note">
+  <div class="modal">
+    <div class="modal-header"><h3>🗒️ Nueva nota</h3><button class="modal-close" onclick="closeModal('modal-add-note')">×</button></div>
+    <div class="form-group"><label class="form-label">Título</label><input class="form-input" id="note-title" placeholder="Título de la nota"></div>
+    <div class="form-group"><label class="form-label">Contenido</label><textarea class="form-textarea" id="note-body" placeholder="Escribe aquí..." style="min-height:110px;"></textarea></div>
+    <div class="form-group">
+      <label class="form-label">Color</label>
+      <div class="flex gap-2">
+        <div class="note-color-pick" data-color="blue" style="width:26px;height:26px;border-radius:7px;background:var(--blue-dim);border:2px solid var(--blue);cursor:pointer;" onclick="selectNoteColor('blue',this)"></div>
+        <div class="note-color-pick" data-color="green" style="width:26px;height:26px;border-radius:7px;background:var(--green-dim);border:2px solid transparent;cursor:pointer;" onclick="selectNoteColor('green',this)"></div>
+        <div class="note-color-pick" data-color="red" style="width:26px;height:26px;border-radius:7px;background:var(--red-dim);border:2px solid transparent;cursor:pointer;" onclick="selectNoteColor('red',this)"></div>
+        <div class="note-color-pick" data-color="yellow" style="width:26px;height:26px;border-radius:7px;background:var(--yellow-dim);border:2px solid transparent;cursor:pointer;" onclick="selectNoteColor('yellow',this)"></div>
+        <div class="note-color-pick" data-color="gray" style="width:26px;height:26px;border-radius:7px;background:var(--bg4);border:2px solid transparent;cursor:pointer;" onclick="selectNoteColor('gray',this)"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-note')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveNote()">Guardar nota</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Section -->
+<div class="modal-overlay" id="modal-new-section">
+  <div class="modal">
+    <div class="modal-header"><h3>📁 Nueva sección</h3><button class="modal-close" onclick="closeModal('modal-new-section')">×</button></div>
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="ns-name" placeholder="Nombre de la sección"></div>
+    <div class="form-group"><label class="form-label">Ícono (emoji)</label><input class="form-input" id="ns-icon" placeholder="📌" maxlength="2"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-new-section')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveNewSection()">Crear</button>
+    </div>
+  </div>
+</div>
+
+<!-- Note Viewer -->
+<div class="note-view" id="note-view">
+  <div class="note-view-card">
+    <div class="flex justify-between items-center" style="margin-bottom:18px;">
+      <div class="note-view-title" id="nv-title"></div>
+      <div class="flex gap-2">
+        <button class="btn btn-danger btn-sm" id="nv-delete-btn">🗑 Eliminar</button>
+        <button class="btn btn-ghost btn-sm" onclick="closeNoteView()">Cerrar</button>
+      </div>
+    </div>
+    <div class="note-view-body" id="nv-body"></div>
+    <div style="font-size:11px;color:var(--text3);margin-top:14px;" id="nv-date"></div>
+  </div>
+</div>
+
+<script>
+// ══ STATE ══
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+
+const DEFAULT={
+  config:{name:'Sebastián',currency:'$'},
+  wlCats:['Tecnología','Ropa','Accesorios','Hogar','Otros'],
+  wishes:[],
+  subs:[
+    {id:uid(),name:'Spotify',cost:17900,cycle:'mensual',renewal:'',icon:'🎵',active:true,preset:true},
+    {id:uid(),name:'Netflix',cost:19900,cycle:'mensual',renewal:'',icon:'🎬',active:true,preset:true},
+    {id:uid(),name:'Claude',cost:25000,cycle:'mensual',renewal:'',icon:'🤖',active:true,preset:true}
+  ],
+  salCats:['Restaurantes','Ropa','Entretenimiento','Transporte','Mercado','Otros'],
+  salidas:[],
+  iglesiaDiezmo:[],iglesiaApoyo:[],iglesiaEncuentros:[],
+  incomes:[],expenses:[],
+  expCats:['Servicios','Salud','Educación','Hogar','Otros'],
+  notes:[],
+  customSections:[]
+};
+
+let S=loadState();
+function loadState(){try{const r=localStorage.getItem('mi_espacio_v3');if(r)return JSON.parse(r);}catch(e){}return JSON.parse(JSON.stringify(DEFAULT));}
+function save(){localStorage.setItem('mi_espacio_v3',JSON.stringify(S));}
+function fmt(n){const c=S.config?.currency||'$';return c+(Number(n)||0).toLocaleString('es-CO');}
+
+// ══ SIDEBAR ══
+function toggleSidebar(){
+  const s=document.getElementById('sidebar');
+  const o=document.getElementById('sidebar-overlay');
+  const isOpen=s.classList.contains('open');
+  if(isOpen){closeSidebar();}else{s.classList.add('open');o.classList.add('open');}
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
+
+// ══ NAVIGATION ══
+let currentPage='home';
+function goTo(page){
+  closeSidebar();
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.bar-btn').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('page-'+page);
+  if(el)el.classList.add('active');
+  const nav=document.querySelector(`[data-page="${page}"]`);
+  if(nav)nav.classList.add('active');
+  const bar=document.querySelector(`[data-bar="${page}"]`);
+  if(bar)bar.classList.add('active');
+  currentPage=page;
+  renderPage(page);
+}
+function renderPage(p){
+  const m={home:renderHome,wishlist:renderWishlist,suscripciones:renderSubs,salidas:renderSalidas,iglesia:renderIglesia,finanzas:renderFinanzas,notas:renderNotes,herramientas:()=>{},config:renderConfig};
+  if(m[p])m[p]();else renderCustomSection(p);
+}
+
+// ══ TABS ══
+function switchTab(prefix,tab,el){
+  el.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll(`[id^="${prefix}-"][id$="-view"]`).forEach(v=>v.style.display='none');
+  const v=document.getElementById(`${prefix}-${tab}-view`);
+  if(v)v.style.display='block';
+}
+
+// ══ MODALS ══
+function openModal(id){setupModal(id);document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function openQuickAdd(){document.getElementById('modal-quick-add').classList.add('open');}
+document.addEventListener('click',e=>{if(e.target.classList.contains('modal-overlay'))e.target.classList.remove('open');});
+
+function setupModal(id){
+  const today=new Date().toISOString().slice(0,10);
+  if(id==='modal-add-wish'){document.getElementById('wl-cat').innerHTML=S.wlCats.map(c=>`<option>${c}</option>`).join('');['wl-name','wl-price','wl-link','wl-notes'].forEach(i=>document.getElementById(i).value='');}
+  if(id==='modal-add-salida'){document.getElementById('sal-cat').innerHTML=S.salCats.map(c=>`<option>${c}</option>`).join('');['sal-name','sal-amount','sal-note'].forEach(i=>document.getElementById(i).value='');document.getElementById('sal-date').value=today;}
+  if(id==='modal-add-expense'){document.getElementById('exp-cat').innerHTML=S.expCats.map(c=>`<option>${c}</option>`).join('');['exp-name','exp-amount'].forEach(i=>document.getElementById(i).value='');document.getElementById('exp-date').value=today;}
+  if(id==='modal-add-income'){['inc-name','inc-amount'].forEach(i=>document.getElementById(i).value='');document.getElementById('inc-date').value=today;}
+  if(id==='modal-add-note'){['note-title','note-body'].forEach(i=>document.getElementById(i).value='');selectedNoteColor='blue';document.querySelectorAll('.note-color-pick').forEach(e=>e.style.borderColor='transparent');document.querySelector('[data-color="blue"]').style.borderColor='var(--blue)';}
+  if(id==='modal-add-quick-expense'){['qe-name','qe-amount'].forEach(i=>document.getElementById(i).value='');document.getElementById('qe-date').value=today;document.getElementById('qe-section').value='';}
+  if(id==='modal-acquired'){['acq-price','acq-note'].forEach(i=>document.getElementById(i).value='');document.getElementById('acq-date').value=today;}
+}
+
+// ══ CALCULATIONS ══
+function calcTotals(){
+  const now=new Date();const m=now.getMonth();const y=now.getFullYear();
+  const inM=d=>{const dt=new Date(d);return dt.getMonth()===m&&dt.getFullYear()===y;};
+  const income=S.incomes.filter(i=>inM(i.date)).reduce((a,b)=>a+(b.amount||0),0);
+  let expenses=0;
+  expenses+=S.expenses.filter(e=>inM(e.date)).reduce((a,b)=>a+(b.amount||0),0);
+  expenses+=calcSubsMonthly();
+  expenses+=S.salidas.filter(s=>inM(s.date)).reduce((a,b)=>a+(b.amount||0),0);
+  const ig=calcIglesiaTotals();expenses+=ig.total;
+  expenses+=S.wishes.filter(w=>w.acquired&&w.acquiredDate&&inM(w.acquiredDate)).reduce((a,b)=>a+(b.acquiredPrice||0),0);
+  return{income,expenses,balance:income-expenses};
+}
+function calcSubsMonthly(){return S.subs.filter(s=>s.active).reduce((a,s)=>{if(s.cycle==='anual')return a+(s.cost/12);if(s.cycle==='semanal')return a+(s.cost*4.33);return a+(s.cost||0);},0);}
+function calcIglesiaTotals(){
+  const now=new Date();const m=now.getMonth();const y=now.getFullYear();
+  const inM=d=>{const dt=new Date(d);return dt.getMonth()===m&&dt.getFullYear()===y;};
+  const diezmo=S.iglesiaDiezmo.filter(i=>inM(i.date)).reduce((a,b)=>a+(b.amount||0),0);
+  const apoyo=S.iglesiaApoyo.filter(i=>inM(i.date)).reduce((a,b)=>a+(b.amount||0),0);
+  const encuentros=S.iglesiaEncuentros.filter(i=>inM(i.date)).reduce((a,b)=>a+(b.amount||0),0);
+  return{diezmo,apoyo,encuentros,total:diezmo+apoyo+encuentros};
+}
+
+// ══ HOME ══
+function renderHome(){
+  const name=S.config?.name||'Sebastián';
+  document.getElementById('home-greeting-text').textContent=`Hola, ${name} 👋`;
+  document.getElementById('home-date').textContent=new Date().toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const t=calcTotals();
+  document.getElementById('home-stats').innerHTML=`
+    <div class="stat-card green"><div class="stat-label">Ingresos del mes</div><div class="stat-value green">${fmt(t.income)}</div></div>
+    <div class="stat-card red"><div class="stat-label">Gastos del mes</div><div class="stat-value red">${fmt(t.expenses)}</div></div>
+    <div class="stat-card blue"><div class="stat-label">Balance</div><div class="stat-value ${t.balance>=0?'green':'red'}">${fmt(t.balance)}</div></div>
+    <div class="stat-card yellow"><div class="stat-label">Suscripciones activas</div><div class="stat-value yellow">${S.subs.filter(s=>s.active).length}</div><div class="stat-sub">${fmt(calcSubsMonthly())}/mes</div></div>
+  `;
+  const sections=[
+    {id:'wishlist',icon:'✨',name:'Wish List',desc:`${S.wishes.filter(w=>!w.acquired).length} pendientes · ${S.wishes.filter(w=>w.acquired).length} adquiridos`},
+    {id:'suscripciones',icon:'📦',name:'Suscripciones',desc:`${S.subs.filter(s=>s.active).length} activas · ${fmt(calcSubsMonthly())}/mes`},
+    {id:'salidas',icon:'🚗',name:'Salidas',desc:`${S.salidas.length} registradas`},
+    {id:'iglesia',icon:'⛪',name:'Iglesia',desc:`${fmt(calcIglesiaTotals().total)} este mes`},
+    {id:'finanzas',icon:'💰',name:'Finanzas',desc:`Balance: ${fmt(t.balance)}`},
+    {id:'notas',icon:'🗒️',name:'Notas',desc:`${S.notes.length} nota${S.notes.length!==1?'s':''}`},
+    ...S.customSections.map(cs=>({id:'custom_'+cs.id,icon:cs.icon,name:cs.name,desc:'Sección personalizada'}))
+  ];
+  document.getElementById('home-sections-grid').innerHTML=sections.map(s=>`
+    <div class="home-section-card" onclick="goTo('${s.id}')">
+      <span class="hs-icon">${s.icon}</span>
+      <div class="hs-name">${s.name}</div>
+      <div class="hs-desc">${s.desc}</div>
+    </div>
+  `).join('');
+}
+
+// ══ WISHLIST ══
+function renderWishlist(){
+  document.getElementById('wishlist-pending-list').innerHTML=renderWishByCat(S.wishes.filter(w=>!w.acquired),false);
+  document.getElementById('wishlist-acquired-list').innerHTML=renderWishByCat(S.wishes.filter(w=>w.acquired),true);
+}
+function renderWishByCat(items,isAcq){
+  if(!items.length)return`<div class="empty-state"><div class="es-icon">${isAcq?'✅':'✨'}</div><div class="es-text">${isAcq?'Nada adquirido aún':'Tu lista está vacía'}</div></div>`;
+  const byCat={};items.forEach(w=>{if(!byCat[w.cat])byCat[w.cat]=[];byCat[w.cat].push(w);});
+  return Object.entries(byCat).map(([cat,ws])=>`
+    <div class="cat-section">
+      <div class="cat-header"><h3>${cat}</h3><span class="text-xs text-muted">${ws.length} ítem${ws.length!==1?'s':''}</span></div>
+      <div class="item-list">${ws.map(w=>`
+        <div class="item-card${isAcq?' acquired':''}">
+          <div class="item-info">
+            <div class="item-name">${w.name}</div>
+            <div class="item-meta">
+              ${w.price?`<span class="item-tag tag-blue">${fmt(w.price)}</span>`:''}
+              ${isAcq?`<span class="item-tag tag-green">Pagado: ${fmt(w.acquiredPrice)}</span>`:''}
+              ${w.note?`<span class="text-muted text-xs">${w.note}</span>`:''}
+            </div>
+          </div>
+          <div class="item-actions">
+            ${w.link?`<a href="${w.link}" target="_blank" class="btn btn-ghost btn-xs">🔗</a>`:''}
+            ${!isAcq?`<button class="btn btn-green btn-xs" onclick="markAcquired('${w.id}')">✅</button>`:`<button class="btn btn-ghost btn-xs" onclick="unAcquire('${w.id}')">↩</button>`}
+            <button class="btn-icon" onclick="deleteWish('${w.id}')">🗑</button>
+          </div>
+        </div>
+      `).join('')}</div>
+    </div>
+  `).join('');
+}
+function saveWish(){const n=document.getElementById('wl-name').value.trim();if(!n)return;S.wishes.push({id:uid(),name:n,cat:document.getElementById('wl-cat').value,price:+document.getElementById('wl-price').value||0,link:document.getElementById('wl-link').value.trim(),note:document.getElementById('wl-notes').value.trim(),acquired:false});save();closeModal('modal-add-wish');renderWishlist();}
+function saveWLCat(){const n=document.getElementById('wl-cat-name').value.trim();if(!n||S.wlCats.includes(n))return;S.wlCats.push(n);save();closeModal('modal-add-wl-cat');renderWishlist();}
+function markAcquired(id){document.getElementById('acq-id').value=id;openModal('modal-acquired');}
+function confirmAcquired(){
+  const id=document.getElementById('acq-id').value;const w=S.wishes.find(w=>w.id===id);if(!w)return;
+  w.acquired=true;w.acquiredPrice=+document.getElementById('acq-price').value||w.price;w.acquiredDate=document.getElementById('acq-date').value;w.acquiredNote=document.getElementById('acq-note').value;
+  save();closeModal('modal-acquired');renderWishlist();if(currentPage==='finanzas')renderFinanzas();
+}
+function unAcquire(id){const w=S.wishes.find(w=>w.id===id);if(!w)return;w.acquired=false;delete w.acquiredPrice;delete w.acquiredDate;save();renderWishlist();}
+function deleteWish(id){S.wishes=S.wishes.filter(w=>w.id!==id);save();renderWishlist();}
+
+// ══ SUBS ══
+function renderSubs(){
+  const monthly=calcSubsMonthly();
+  document.getElementById('sub-stats').innerHTML=`
+    <div class="stat-card blue"><div class="stat-label">Total mensual</div><div class="stat-value blue">${fmt(monthly)}</div></div>
+    <div class="stat-card yellow"><div class="stat-label">Total anual</div><div class="stat-value yellow">${fmt(monthly*12)}</div></div>
+    <div class="stat-card green"><div class="stat-label">Activas</div><div class="stat-value green">${S.subs.filter(s=>s.active).length}</div></div>
+  `;
+  document.getElementById('subs-list').innerHTML=!S.subs.length?`<div class="empty-state"><div class="es-icon">📦</div><div class="es-text">Sin suscripciones</div></div>`:`
+    <div class="item-list">${S.subs.map(s=>`
+      <div class="item-card">
+        <span style="font-size:26px;">${s.icon||'📦'}</span>
+        <div class="item-info">
+          <div class="item-name">${s.name}</div>
+          <div class="item-meta"><span class="item-tag tag-blue">${fmt(s.cost)} / ${s.cycle}</span>${s.renewal?`<span class="text-muted text-xs">Renueva: ${s.renewal}</span>`:''}</div>
+        </div>
+        <div class="item-actions">
+          <label class="toggle"><input type="checkbox" ${s.active?'checked':''} onchange="toggleSub('${s.id}',this.checked)"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+          ${!s.preset?`<button class="btn-icon" onclick="deleteSub('${s.id}')">🗑</button>`:''}
+        </div>
+      </div>
+    `).join('')}</div>`;
+}
+function toggleSub(id,val){const s=S.subs.find(s=>s.id===id);if(s){s.active=val;save();renderSubs();if(currentPage==='finanzas')renderFinanzas();}}
+function saveSub(){const n=document.getElementById('sub-name').value.trim();if(!n)return;S.subs.push({id:uid(),name:n,cost:+document.getElementById('sub-cost').value||0,cycle:document.getElementById('sub-cycle').value,renewal:document.getElementById('sub-renewal').value,icon:document.getElementById('sub-icon').value||'📦',active:true});save();closeModal('modal-add-sub');renderSubs();}
+function deleteSub(id){S.subs=S.subs.filter(s=>s.id!==id);save();renderSubs();}
+
+// ══ SALIDAS ══
+function renderSalidas(){
+  const now=new Date();const m=now.getMonth();const y=now.getFullYear();
+  const inM=d=>{const dt=new Date(d);return dt.getMonth()===m&&dt.getFullYear()===y;};
+  const tMonth=S.salidas.filter(s=>inM(s.date)).reduce((a,b)=>a+(b.amount||0),0);
+  const tAll=S.salidas.reduce((a,b)=>a+(b.amount||0),0);
+  document.getElementById('salidas-stats').innerHTML=`<div class="stats-grid" style="margin-bottom:20px;"><div class="stat-card red"><div class="stat-label">Este mes</div><div class="stat-value red">${fmt(tMonth)}</div></div><div class="stat-card yellow"><div class="stat-label">Total general</div><div class="stat-value yellow">${fmt(tAll)}</div></div></div>`;
+  if(!S.salidas.length){document.getElementById('salidas-list').innerHTML=`<div class="empty-state"><div class="es-icon">🚗</div><div class="es-text">Sin salidas registradas</div></div>`;return;}
+  const byCat={};S.salidas.forEach(s=>{if(!byCat[s.cat])byCat[s.cat]=[];byCat[s.cat].push(s);});
+  document.getElementById('salidas-list').innerHTML=Object.entries(byCat).map(([cat,items])=>`
+    <div class="cat-section">
+      <div class="cat-header"><h3>${cat}</h3><span class="text-xs text-muted">${fmt(items.reduce((a,b)=>a+(b.amount||0),0))}</span></div>
+      <div class="item-list">${items.map(s=>`
+        <div class="item-card">
+          <div class="item-info">
+            <div class="item-name">${s.name}</div>
+            <div class="item-meta"><span class="item-tag tag-red">${fmt(s.amount)}</span><span class="text-xs text-muted">${s.date}</span>${s.note?` · <span class="text-xs text-muted">${s.note}</span>`:''}</div>
+          </div>
+          <button class="btn-icon" onclick="deleteSalida('${s.id}')">🗑</button>
+        </div>
+      `).join('')}</div>
+    </div>
+  `).join('');
+}
+function saveSalida(){const n=document.getElementById('sal-name').value.trim();if(!n)return;S.salidas.push({id:uid(),name:n,cat:document.getElementById('sal-cat').value,amount:+document.getElementById('sal-amount').value||0,date:document.getElementById('sal-date').value,note:document.getElementById('sal-note').value});save();closeModal('modal-add-salida');renderSalidas();if(currentPage==='finanzas')renderFinanzas();}
+function saveSalidaCat(){const n=document.getElementById('sal-cat-name').value.trim();if(!n||S.salCats.includes(n))return;S.salCats.push(n);save();closeModal('modal-add-sal-cat');}
+function deleteSalida(id){S.salidas=S.salidas.filter(s=>s.id!==id);save();renderSalidas();}
+
+// ══ IGLESIA ══
+function openIglesiaModal(type){
+  document.getElementById('ig-type').value=type;
+  const titles={diezmo:'⛪ Diezmo y Ofrenda',apoyo:'🤝 Apoyo Social',encuentros:'🙏 Encuentro'};
+  document.getElementById('iglesia-modal-title').textContent=titles[type];
+  document.getElementById('ig-name-group').style.display=type==='diezmo'?'none':'block';
+  document.getElementById('ig-subtype-group').style.display=type==='diezmo'?'block':'none';
+  document.getElementById('ig-amount').value='';document.getElementById('ig-name').value='';
+  document.getElementById('ig-date').value=new Date().toISOString().slice(0,10);
+  openModal('modal-iglesia');
+}
+function renderIglesia(){
+  const ig=calcIglesiaTotals();
+  document.getElementById('iglesia-stats').innerHTML=`
+    <div class="stat-card blue"><div class="stat-label">Diezmo y Ofrenda</div><div class="stat-value blue">${fmt(ig.diezmo)}</div></div>
+    <div class="stat-card green"><div class="stat-label">Apoyo Social</div><div class="stat-value green">${fmt(ig.apoyo)}</div></div>
+    <div class="stat-card yellow"><div class="stat-label">Encuentros</div><div class="stat-value yellow">${fmt(ig.encuentros)}</div></div>
+    <div class="stat-card red"><div class="stat-label">Total</div><div class="stat-value red">${fmt(ig.total)}</div></div>
+  `;
+  document.getElementById('iglesia-diezmo-list').innerHTML=`<div style="margin-bottom:12px;"><button class="btn btn-primary btn-sm" onclick="openIglesiaModal('diezmo')">+ Añadir</button></div>`+renderIglesiaList(S.iglesiaDiezmo,'diezmo');
+  document.getElementById('iglesia-apoyo-list').innerHTML=`<div style="margin-bottom:12px;"><button class="btn btn-primary btn-sm" onclick="openIglesiaModal('apoyo')">+ Añadir</button></div>`+renderIglesiaList(S.iglesiaApoyo,'apoyo');
+  document.getElementById('iglesia-encuentros-list').innerHTML=`<div style="margin-bottom:12px;"><button class="btn btn-primary btn-sm" onclick="openIglesiaModal('encuentros')">+ Añadir</button></div>`+renderIglesiaList(S.iglesiaEncuentros,'encuentros');
+}
+function renderIglesiaList(items,type){
+  if(!items.length)return`<div class="empty-state"><div class="es-icon">⛪</div><div class="es-text">Sin registros</div></div>`;
+  return`<div class="item-list">${items.map(i=>`<div class="item-card"><div class="item-info"><div class="item-name">${i.name||(i.subtype||'Diezmo')}</div><div class="item-meta"><span class="item-tag tag-blue">${fmt(i.amount)}</span><span class="text-xs text-muted">${i.date}</span></div></div><button class="btn-icon" onclick="deleteIglesia('${i.id}','${type}')">🗑</button></div>`).join('')}</div>`;
+}
+function saveIglesia(){
+  const type=document.getElementById('ig-type').value;const amount=+document.getElementById('ig-amount').value||0;const date=document.getElementById('ig-date').value;
+  if(!amount)return;const item={id:uid(),amount,date};
+  if(type==='diezmo')item.subtype=document.getElementById('ig-subtype').value;
+  else item.name=document.getElementById('ig-name').value.trim()||(type==='apoyo'?'Apoyo':'Encuentro');
+  if(type==='diezmo')S.iglesiaDiezmo.push(item);else if(type==='apoyo')S.iglesiaApoyo.push(item);else S.iglesiaEncuentros.push(item);
+  save();closeModal('modal-iglesia');renderIglesia();
+}
+function deleteIglesia(id,type){
+  if(type==='diezmo')S.iglesiaDiezmo=S.iglesiaDiezmo.filter(i=>i.id!==id);
+  else if(type==='apoyo')S.iglesiaApoyo=S.iglesiaApoyo.filter(i=>i.id!==id);
+  else S.iglesiaEncuentros=S.iglesiaEncuentros.filter(i=>i.id!==id);
+  save();renderIglesia();
+}
+
+// ══ FINANZAS ══
+function renderFinanzas(){
+  const t=calcTotals();const sr=t.income>0?Math.round(((t.income-t.expenses)/t.income)*100):0;
+  document.getElementById('fin-stats').innerHTML=`
+    <div class="stat-card green"><div class="stat-label">Ingresos</div><div class="stat-value green">${fmt(t.income)}</div></div>
+    <div class="stat-card red"><div class="stat-label">Gastos</div><div class="stat-value red">${fmt(t.expenses)}</div></div>
+    <div class="stat-card blue"><div class="stat-label">Balance</div><div class="stat-value ${t.balance>=0?'green':'red'}">${fmt(t.balance)}</div></div>
+    <div class="stat-card yellow"><div class="stat-label">Tasa de ahorro</div><div class="stat-value yellow">${sr}%</div></div>
+  `;
+  const il=document.getElementById('fin-incomes-list');
+  il.innerHTML=!S.incomes.length?`<div class="empty-state" style="padding:20px 0;"><div class="es-text">Sin ingresos</div></div>`:`<div class="item-list">${S.incomes.map(i=>`<div class="item-card"><div class="item-info"><div class="item-name">${i.name}</div><div class="item-meta"><span class="item-tag tag-green">${fmt(i.amount)}</span><span class="text-xs text-muted">${i.date}</span></div></div><button class="btn-icon" onclick="deleteIncome('${i.id}')">🗑</button></div>`).join('')}</div>`;
+  const el2=document.getElementById('fin-expenses-list');
+  el2.innerHTML=!S.expenses.length?`<div class="empty-state" style="padding:20px 0;"><div class="es-text">Sin gastos manuales</div></div>`:`<div class="item-list">${S.expenses.map(e=>`<div class="item-card"><div class="item-info"><div class="item-name">${e.name}</div><div class="item-meta"><span class="item-tag tag-red">${fmt(e.amount)}</span><span class="item-tag tag-gray">${e.cat}</span></div></div><button class="btn-icon" onclick="deleteExpense('${e.id}')">🗑</button></div>`).join('')}</div>`;
+  const auto=[];
+  S.subs.filter(s=>s.active).forEach(s=>auto.push({l:s.name,a:s.cost,src:'Suscripción',ic:s.icon}));
+  S.salidas.forEach(s=>auto.push({l:s.name,a:s.amount,src:'Salida',ic:'🚗'}));
+  S.iglesiaDiezmo.forEach(i=>auto.push({l:i.subtype||'Diezmo',a:i.amount,src:'Iglesia',ic:'⛪'}));
+  S.iglesiaApoyo.forEach(i=>auto.push({l:i.name||'Apoyo',a:i.amount,src:'Iglesia',ic:'🤝'}));
+  S.iglesiaEncuentros.forEach(i=>auto.push({l:i.name||'Encuentro',a:i.amount,src:'Iglesia',ic:'🙏'}));
+  S.wishes.filter(w=>w.acquired).forEach(w=>auto.push({l:w.name,a:w.acquiredPrice||0,src:'Wish List',ic:'✅'}));
+  const ae=document.getElementById('fin-auto-expenses');
+  ae.innerHTML=!auto.length?`<div class="empty-state" style="padding:16px 0;"><div class="es-text">Sin gastos automáticos</div></div>`:`<div class="item-list">${auto.map(i=>`<div class="item-card"><span style="font-size:18px;">${i.ic}</span><div class="item-info"><div class="item-name">${i.l}</div><div class="item-meta"><span class="item-tag tag-red">${fmt(i.a)}</span><span class="pill" style="background:var(--bg4);color:var(--text3);font-size:10px;">${i.src}</span></div></div></div>`).join('')}</div>`;
+}
+function saveIncome(){const n=document.getElementById('inc-name').value.trim();if(!n)return;S.incomes.push({id:uid(),name:n,amount:+document.getElementById('inc-amount').value||0,date:document.getElementById('inc-date').value});save();closeModal('modal-add-income');if(currentPage==='finanzas')renderFinanzas();if(currentPage==='home')renderHome();}
+function deleteIncome(id){S.incomes=S.incomes.filter(i=>i.id!==id);save();renderFinanzas();}
+function saveExpense(){const n=document.getElementById('exp-name').value.trim();if(!n)return;S.expenses.push({id:uid(),name:n,cat:document.getElementById('exp-cat').value,amount:+document.getElementById('exp-amount').value||0,date:document.getElementById('exp-date').value});save();closeModal('modal-add-expense');if(currentPage==='finanzas')renderFinanzas();}
+function deleteExpense(id){S.expenses=S.expenses.filter(e=>e.id!==id);save();renderFinanzas();}
+function saveExpCat(){const n=document.getElementById('exp-cat-name').value.trim();if(!n||S.expCats.includes(n))return;S.expCats.push(n);save();closeModal('modal-add-exp-cat');}
+
+// ══ QUICK EXPENSE ══
+function saveQuickExpense(){
+  const n=document.getElementById('qe-name').value.trim();const a=+document.getElementById('qe-amount').value||0;
+  const date=document.getElementById('qe-date').value;const sec=document.getElementById('qe-section').value;
+  if(!n)return;
+  if(sec==='salidas'||sec==='')S.salidas.push({id:uid(),name:n,cat:'Otros',amount:a,date,note:''});
+  else if(sec==='finanzas')S.expenses.push({id:uid(),name:n,cat:'Otros',amount:a,date});
+  else if(sec==='iglesia-apoyo')S.iglesiaApoyo.push({id:uid(),name:n,amount:a,date});
+  save();closeModal('modal-add-quick-expense');renderPage(currentPage);
+}
+
+// ══ NOTES ══
+let selectedNoteColor='blue';
+function selectNoteColor(color,el){selectedNoteColor=color;document.querySelectorAll('.note-color-pick').forEach(e=>e.style.borderColor='transparent');el.style.borderColor=`var(--${color==='gray'?'border2':color})`;}
+function renderNotes(){
+  const g=document.getElementById('notes-grid');
+  if(!S.notes.length){g.innerHTML=`<div class="empty-state" style="grid-column:1/-1;"><div class="es-icon">🗒️</div><div class="es-text">Sin notas. ¡Crea una!</div></div>`;return;}
+  const cm={blue:'var(--blue)',green:'var(--green)',red:'var(--red)',yellow:'var(--yellow)',gray:'var(--border2)'};
+  g.innerHTML=S.notes.map(n=>`
+    <div class="note-card" onclick="viewNote('${n.id}')" style="border-left:3px solid ${cm[n.color]||'var(--blue)'};">
+      <button class="btn-icon note-del-btn" style="font-size:11px;" onclick="event.stopPropagation();deleteNote('${n.id}')">🗑</button>
+      <div class="note-title">${n.title||'Sin título'}</div>
+      <div class="note-body">${n.body}</div>
+      <div class="note-date">${new Date(n.date).toLocaleDateString('es-CO')}</div>
+    </div>
+  `).join('');
+}
+function saveNote(){const t=document.getElementById('note-title').value.trim();const b=document.getElementById('note-body').value.trim();if(!b&&!t)return;S.notes.unshift({id:uid(),title:t,body:b,color:selectedNoteColor,date:Date.now()});save();closeModal('modal-add-note');renderNotes();}
+function deleteNote(id){S.notes=S.notes.filter(n=>n.id!==id);save();renderNotes();closeNoteView();}
+function viewNote(id){
+  const n=S.notes.find(n=>n.id===id);if(!n)return;
+  document.getElementById('nv-title').textContent=n.title||'Sin título';
+  document.getElementById('nv-body').textContent=n.body;
+  document.getElementById('nv-date').textContent=new Date(n.date).toLocaleString('es-CO');
+  document.getElementById('nv-delete-btn').onclick=()=>deleteNote(n.id);
+  document.getElementById('note-view').classList.add('open');
+}
+function closeNoteView(){document.getElementById('note-view').classList.remove('open');}
+
+// ══ CUSTOM SECTIONS ══
+function saveNewSection(){const n=document.getElementById('ns-name').value.trim();const icon=document.getElementById('ns-icon').value||'📌';if(!n)return;const id=uid();S.customSections.push({id,name:n,icon});save();closeModal('modal-new-section');renderCustomNav();goTo('custom_'+id);}
+function renderCustomNav(){document.getElementById('custom-nav-items').innerHTML=S.customSections.map(cs=>`<div class="nav-item" onclick="goTo('custom_${cs.id}')" data-page="custom_${cs.id}"><span class="icon">${cs.icon}</span>${cs.name}</div>`).join('');}
+function renderCustomSection(page){
+  const id=page.replace('custom_','');const cs=S.customSections.find(c=>c.id===id);if(!cs)return;
+  let el=document.getElementById('page-'+page);
+  if(!el){el=document.createElement('div');el.id='page-'+page;el.className='page';document.querySelector('.main').appendChild(el);}
+  el.classList.add('active');
+  el.innerHTML=`<div class="section-header"><h2>${cs.icon} ${cs.name}</h2></div><div class="empty-state"><div class="es-icon">${cs.icon}</div><div class="es-text">Sección personalizada</div></div>`;
+}
+
+// ══ CONFIG ══
+function renderConfig(){document.getElementById('config-name').value=S.config?.name||'Sebastián';document.getElementById('config-currency').value=S.config?.currency||'$';}
+function saveConfig(){S.config={name:document.getElementById('config-name').value,currency:document.getElementById('config-currency').value};save();const b=document.querySelector('#page-config .btn-primary');if(b){b.textContent='✅ Guardado';setTimeout(()=>b.textContent='Guardar cambios',1500);}}
+function exportData(){const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mi-espacio-datos.json';a.click();}
+function clearAllData(){if(confirm('¿Seguro? Esto borrará todos tus datos.')){{localStorage.removeItem('mi_espacio_v3');location.reload();}}}
+
+// ══ INIT ══
+renderCustomNav();
+renderHome();
+</script>
+</body>
+</html>
